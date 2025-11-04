@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Network Scanner</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="particles-bg" id="particles"></div>
+    
+    <nav class="navbar">
+        <div class="nav-brand">
+            <i class="fas fa-network-wired"></i>
+            <span>NetScanner Pro</span>
+        </div>
+        <div class="nav-stats">
+            <div class="stat-item">
+                <span class="stat-value" id="totalScanned">0</span>
+                <span class="stat-label">Hosts Scanned</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value" id="hostsFound">0</span>
+                <span class="stat-label">Active Hosts</span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="scanner-card">
+            <div class="card-header">
+                <h1><i class="fas fa-radar"></i> Advanced Network Scanner</h1>
+                <p>Discover network topology with real-time scanning</p>
+            </div>
+            
+            <div class="scanner-form">
+                <div class="form-row">
+                    <div class="input-group">
+                        <label for="ipRange"><i class="fas fa-globe"></i> IP Range:</label>
+                        <input type="text" id="ipRange" placeholder="192.168.1.1-254" value="192.168.1.1-254">
+                        <button class="detect-btn" onclick="autoDetectNetwork()"><i class="fas fa-search"></i></button>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="ports"><i class="fas fa-door-open"></i> Ports:</label>
+                        <input type="text" id="ports" placeholder="22,80,443,8080" value="22,80,443,8080,3389,21,23,25,53,110,993,995">
+                        <select id="portPresets" onchange="loadPortPreset()">
+                            <option value="">Presets</option>
+                            <option value="common">Common Ports</option>
+                            <option value="web">Web Services</option>
+                            <option value="mail">Mail Services</option>
+                            <option value="database">Database Ports</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="scan-options">
+                    <div class="option-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="aggressiveScan" checked>
+                            <span class="checkmark"></span>
+                            Aggressive Scan
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="osDetection">
+                            <span class="checkmark"></span>
+                            OS Detection
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="serviceDetection" checked>
+                            <span class="checkmark"></span>
+                            Service Detection
+                        </label>
+                    </div>
+                    
+                    <div class="speed-control">
+                        <label for="scanSpeed">Scan Speed:</label>
+                        <input type="range" id="scanSpeed" min="1" max="5" value="3">
+                        <span id="speedLabel">Normal</span>
+                    </div>
+                </div>
+                
+                <div class="control-buttons">
+                    <button id="scanBtn" onclick="startScan()" class="btn-primary">
+                        <i class="fas fa-play"></i> Start Scan
+                    </button>
+                    <button id="pauseBtn" onclick="pauseScan()" disabled class="btn-warning">
+                        <i class="fas fa-pause"></i> Pause
+                    </button>
+                    <button id="stopBtn" onclick="stopScan()" disabled class="btn-danger">
+                        <i class="fas fa-stop"></i> Stop
+                    </button>
+                    <button id="exportBtn" onclick="exportResults()" class="btn-secondary">
+                        <i class="fas fa-download"></i> Export
+                    </button>
+                </div>
+            </div>
+            
+            <div class="progress-section">
+                <div class="progress-header">
+                    <span id="progressText">Ready to scan</span>
+                    <span id="eta"></span>
+                </div>
+                <div class="progress-bar">
+                    <div id="progressFill" class="progress-fill"></div>
+                    <div class="progress-glow"></div>
+                </div>
+                <div class="scan-stats">
+                    <div class="stat"><span id="currentIP">-</span></div>
+                    <div class="stat"><span id="scanRate">0</span> hosts/sec</div>
+                    <div class="stat"><span id="timeElapsed">00:00</span></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="results-section">
+            <div class="results-header">
+                <h2><i class="fas fa-list-ul"></i> Scan Results</h2>
+                <div class="filter-controls">
+                    <input type="text" id="searchFilter" placeholder="Filter results..." onkeyup="filterResults()">
+                    <select id="statusFilter" onchange="filterResults()">
+                        <option value="all">All Hosts</option>
+                        <option value="active">Active Only</option>
+                        <option value="inactive">Inactive Only</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div id="results" class="results-container">
+                <div class="no-results">
+                    <i class="fas fa-search"></i>
+                    <p>No scan results yet. Click "Start Scan" to begin network discovery.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="network-map" id="networkMap">
+            <h3><i class="fas fa-project-diagram"></i> Network Topology</h3>
+            <canvas id="topologyCanvas" width="800" height="400"></canvas>
+        </div>
+    </div>
+    
+    <div class="toast-container" id="toastContainer"></div>
+    
+    <script src="scanner.js"></script>
+</body>
+</html>
